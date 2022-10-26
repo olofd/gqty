@@ -1,13 +1,13 @@
 import { HeroGradient, InfoList } from '@theguild/components';
 
-import { handlePushRoute } from '@guild-docs/client';
-import { ClassNames } from '@emotion/react';
 import { Heading, HStack } from '@chakra-ui/react';
+import { ClassNames } from '@emotion/react';
+import { handlePushRoute } from '@guild-docs/client';
 import Image from 'next/image';
 import GraphQLLogo from '../../public/img/graphql.svg';
-import TypeScriptLogo from '../../public/img/typescript.png';
-import ReactLogo from '../../public/img/react.svg';
 import ProductionReady from '../../public/img/production_ready.png';
+import ReactLogo from '../../public/img/react.svg';
+import TypeScriptLogo from '../../public/img/typescript.png';
 
 export default function Index() {
   return (
@@ -40,7 +40,7 @@ export default function Index() {
                 {
                   title: (
                     <HStack>
-                      <Image src={GraphQLLogo} width="50px" height="50px" />
+                      <Image src={GraphQLLogo} width={50} height={50} />
                       <Heading fontSize="1em">Invisible data fetching</Heading>
                     </HStack>
                   ),
@@ -60,7 +60,7 @@ export default function Index() {
                 {
                   title: (
                     <HStack>
-                      <Image src={TypeScriptLogo} width="50px" height="50px" />
+                      <Image src={TypeScriptLogo} width={50} height={50} />
                       <Heading fontSize="1em">Strongly typed</Heading>
                     </HStack>
                   ),
@@ -77,7 +77,7 @@ export default function Index() {
                 {
                   title: (
                     <HStack>
-                      <Image src={ReactLogo} width="50px" height="50px" />
+                      <Image src={ReactLogo} width={50} height={50} />
                       <Heading fontSize="1em">React.js</Heading>
                     </HStack>
                   ),
@@ -94,7 +94,7 @@ export default function Index() {
                 {
                   title: (
                     <HStack>
-                      <Image src={ProductionReady} width="50px" height="50px" />
+                      <Image src={ProductionReady} width={50} height={50} />
                       <Heading fontSize="1em">Production ready</Heading>
                     </HStack>
                   ),
