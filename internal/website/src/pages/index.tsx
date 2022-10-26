@@ -40,7 +40,12 @@ export default function Index() {
                 {
                   title: (
                     <HStack>
-                      <Image src={GraphQLLogo} width={50} height={50} />
+                      <Image
+                        alt="GraphQL Logo"
+                        src={GraphQLLogo}
+                        width={50}
+                        height={50}
+                      />
                       <Heading fontSize="1em">Invisible data fetching</Heading>
                     </HStack>
                   ),
@@ -60,7 +65,12 @@ export default function Index() {
                 {
                   title: (
                     <HStack>
-                      <Image src={TypeScriptLogo} width={50} height={50} />
+                      <Image
+                        alt="TypeScript Logo"
+                        src={TypeScriptLogo}
+                        width={50}
+                        height={50}
+                      />
                       <Heading fontSize="1em">Strongly typed</Heading>
                     </HStack>
                   ),
@@ -77,7 +87,12 @@ export default function Index() {
                 {
                   title: (
                     <HStack>
-                      <Image src={ReactLogo} width={50} height={50} />
+                      <Image
+                        alt="React Logo"
+                        src={ReactLogo}
+                        width={50}
+                        height={50}
+                      />
                       <Heading fontSize="1em">React.js</Heading>
                     </HStack>
                   ),
@@ -94,7 +109,12 @@ export default function Index() {
                 {
                   title: (
                     <HStack>
-                      <Image src={ProductionReady} width={50} height={50} />
+                      <Image
+                        alt="Icon of Production Ready"
+                        src={ProductionReady}
+                        width={50}
+                        height={50}
+                      />
                       <Heading fontSize="1em">Production ready</Heading>
                     </HStack>
                   ),
