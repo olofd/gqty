@@ -11,7 +11,7 @@ import { type Cache } from '../Cache';
 import { dedupePromise } from '../Cache/query';
 import { GQtyError, doRetry } from '../Error';
 import { notifyFetch, notifyRetry } from '../Helpers/useMetaStateHack';
-import { buildQuery } from '../QueryBuilder';
+import { buildQuery, type GetHashKey } from '../QueryBuilder';
 import { type QueryPayload } from '../Schema';
 import { type Selection } from '../Selection';
 import { type Debugger } from './debugger';
@@ -22,6 +22,7 @@ export type FetchSelectionsOptions = {
   extensions?: Record<string, unknown>;
   fetchOptions: FetchOptions;
   operationName?: string;
+  getHashKey?: GetHashKey;
 };
 
 export type QueryExtensions = { type: string; hash: string };
@@ -40,10 +41,11 @@ export const fetchSelections = <
     extensions: customExtensions,
     fetchOptions,
     operationName,
+    getHashKey,
   }: FetchSelectionsOptions
 ): Promise<FetchResult<TData>[]> =>
   Promise.all(
-    buildQuery(selections, operationName).map(
+    buildQuery(selections, operationName, getHashKey).map(
       async ({
         query,
         variables,

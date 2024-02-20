@@ -20,6 +20,7 @@ import { createLegacySubscriptionsClient } from './compat/subscriptionsClient';
 import { createContext } from './context';
 import { createDebugger, type Debugger } from './debugger';
 import { createResolvers, type Resolvers } from './resolvers';
+import type { GetHashKey } from 'gqty/QueryBuilder';
 
 export { $meta } from '../Accessor';
 export { getFields, prepass, selectFields } from '../Helpers';
@@ -115,6 +116,7 @@ export type ClientOptions = {
   fetchOptions: FetchOptions;
   scalars: ScalarsEnumsHash;
   schema: Readonly<Schema>;
+  getHashKey: GetHashKey;
 
   /**
    * Maximum accessor depth, prevents infinite recursions.
@@ -149,6 +151,7 @@ export const createClient = <
   // not provide a `cache` option.
   // TODO: compat: remove in v4
   cache = new Cache(undefined, { normalization: true }),
+  getHashKey,
   fetchOptions: {
     fetcher,
     cachePolicy: fetchPolicy = 'default',
@@ -201,6 +204,7 @@ export const createClient = <
     schema,
     cache,
     debugger: debug,
+    getHashKey,
     fetchOptions: {
       fetcher,
       cachePolicy: fetchPolicy,

@@ -1,3 +1,4 @@
+import type { GetHashKey } from 'gqty/QueryBuilder';
 import { type BaseGeneratedSchema, type FetchOptions } from '.';
 import { createSchemaAccessor } from '../Accessor';
 import { type Cache } from '../Cache';
@@ -22,6 +23,7 @@ export type CreateResolversOptions = {
   fetchOptions: FetchOptions;
   scalars: ScalarsEnumsHash;
   schema: Readonly<Schema>;
+  getHashKey?: GetHashKey;
 
   // `useRefetch` and `HOC` needs to grab selections from hooks of the same
   // component, we need to simulate what InterceptorManager did.
@@ -131,6 +133,8 @@ export type CreateResolverOptions = {
   onSelect?: SchemaContext['select'];
 
   operationName?: string;
+
+  getHashKey?: GetHashKey;
 };
 
 export type ResolveOptions = CreateResolverOptions & {
@@ -176,6 +180,7 @@ export const createResolvers = <TSchema extends BaseGeneratedSchema>({
   debugger: debug,
   depthLimit,
   fetchOptions,
+  getHashKey: getHashKeyResolvers,
   fetchOptions: {
     cachePolicy: defaultCachePolicy = 'default',
     retryPolicy: defaultRetryPoliy,
@@ -191,6 +196,7 @@ export const createResolvers = <TSchema extends BaseGeneratedSchema>({
     onSubscribe,
     operationName,
     retryPolicy = defaultRetryPoliy,
+    getHashKey,
   }: SubscribeOptions = {}) => {
     const selections = new Set<Selection>();
     const context = createContext({
@@ -261,12 +267,16 @@ export const createResolvers = <TSchema extends BaseGeneratedSchema>({
             pendingQueries.delete(pendingSelections);
 
             delSelectionSet(clientCache, selectionsCacheKey);
-
             const results = await fetchSelections(uniqueSelections, {
               cache: context.cache,
               debugger: debug,
               extensions,
-              fetchOptions: { ...fetchOptions, cachePolicy, retryPolicy },
+              getHashKey: getHashKey ?? getHashKeyResolvers,
+              fetchOptions: {
+                ...fetchOptions,
+                cachePolicy,
+                retryPolicy,
+              },
               operationName,
             });
 

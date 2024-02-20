@@ -4,6 +4,12 @@ import type { QueryPayload } from '../Schema';
 import type { Selection } from '../Selection';
 import { hash } from '../Utils';
 
+export type GetHashKey = (
+  key: string,
+  value: unknown,
+  selection: Selection
+) => string;
+
 export type QueryBuilderOptions = {
   batchWindow: number;
   batchStrategy: 'debounce' | 'throttle';
@@ -46,15 +52,16 @@ const stringifySelectionTree = (tree: SelectionTreeNode): string =>
 
 export const buildQuery = (
   selections: Set<Selection>,
-  operationName?: string
+  operationName?: string,
+  getHashKey?: GetHashKey
 ): BuiltQuery[] => {
   const root = {} as SelectionTreeRoot;
   const variables = new Map<string, { type: string; value: unknown }>();
   const inputDedupe = new Map<object, string>();
-
   // TODO: Stablize variable names, maybe by sorting selections beforehand?
 
-  for (const { ancestry } of selections) {
+  for (const selection of selections) {
+    const { ancestry } = selection;
     set(
       root,
       ancestry.reduce<string[]>((prev, s) => {
@@ -77,10 +84,12 @@ export const buildQuery = (
           if (!inputDedupe.has(input)) {
             const queryInputs = Object.entries(input.values)
               .map(([key, value]) => {
-                const variableName = hash((s.alias ?? s.key) + '_' + key).slice(
-                  0,
-                  s.aliasLength
-                );
+                const variableName = getHashKey
+                  ? getHashKey(key, value, selection)
+                  : hash((s.alias ?? s.key) + '_' + key).slice(
+                      0,
+                      s.aliasLength
+                    );
 
                 variables.set(`${variableName}`, {
                   value,
