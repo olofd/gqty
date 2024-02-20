@@ -7,8 +7,14 @@ const aliasGenerator = {
   seq: 0,
   map: new WeakMap<object, number>(),
   hash,
-  get(key: string | number, input: Record<string, unknown>) {
-    const hash = this.hash({ key, ...input });
+  get(
+    key: string | number,
+    input: Record<string, unknown>,
+    getAliasHashKey?: GetAliasHashKey
+  ) {
+    const hash = getAliasHashKey
+      ? getAliasHashKey(key, input)
+      : this.hash({ key, ...input });
     if (hash) return hash;
 
     const seq = this.map.get(input) ?? this.seq++;
@@ -23,6 +29,10 @@ const aliasGenerator = {
     return `alias${seq}`;
   },
 };
+export type GetAliasHashKey = (
+  key: string | number,
+  input: Record<string, unknown>
+) => string;
 
 export type SelectionOptions = {
   readonly alias?: string;
@@ -30,6 +40,7 @@ export type SelectionOptions = {
   readonly input?: SelectionInput;
   readonly isUnion?: boolean;
   readonly parent?: Selection;
+  readonly getAliasHashKey?: GetAliasHashKey;
 };
 
 export type SelectionInput = {
@@ -60,6 +71,10 @@ export class Selection {
 
   get aliasLength(): number | undefined {
     return this.options.aliasLength ?? this.parent?.aliasLength ?? 6;
+  }
+
+  get getAliasCacheKey(): GetAliasHashKey | undefined {
+    return this.options.getAliasHashKey ?? this.parent?.options.getAliasHashKey;
   }
 
   get input() {
@@ -114,11 +129,10 @@ export class Selection {
       options?.alias ??
       (options?.input
         ? aliasGenerator
-            .get(key, options.input)
+            .get(key, options.input, this.getAliasCacheKey)
             .slice(0, options?.aliasLength ?? this.aliasLength)
         : undefined);
     const hashKey = alias ?? key.toString();
-
     const selection =
       this.children.get(hashKey) ??
       new Selection(key, { ...options, alias, parent: this }, createSymbol);

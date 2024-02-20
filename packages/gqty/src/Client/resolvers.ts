@@ -4,7 +4,7 @@ import { createSchemaAccessor } from '../Accessor';
 import { type Cache } from '../Cache';
 import { type GQtyError, type RetryOptions } from '../Error';
 import { type ScalarsEnumsHash, type Schema } from '../Schema';
-import { type Selection } from '../Selection';
+import { type GetAliasHashKey, type Selection } from '../Selection';
 import { addSelections, delSelectionSet, getSelectionsSet } from './batching';
 import { createContext, type SchemaContext } from './context';
 import { type Debugger } from './debugger';
@@ -24,6 +24,7 @@ export type CreateResolversOptions = {
   scalars: ScalarsEnumsHash;
   schema: Readonly<Schema>;
   getHashKey?: GetHashKey;
+  getAliasHashKey?: GetAliasHashKey;
 
   // `useRefetch` and `HOC` needs to grab selections from hooks of the same
   // component, we need to simulate what InterceptorManager did.
@@ -135,6 +136,8 @@ export type CreateResolverOptions = {
   operationName?: string;
 
   getHashKey?: GetHashKey;
+
+  getAliasHashKey?: GetAliasHashKey;
 };
 
 export type ResolveOptions = CreateResolverOptions & {
@@ -181,6 +184,7 @@ export const createResolvers = <TSchema extends BaseGeneratedSchema>({
   depthLimit,
   fetchOptions,
   getHashKey: getHashKeyResolvers,
+  getAliasHashKey: getAliasHashKeyResolvers,
   fetchOptions: {
     cachePolicy: defaultCachePolicy = 'default',
     retryPolicy: defaultRetryPoliy,
@@ -197,6 +201,7 @@ export const createResolvers = <TSchema extends BaseGeneratedSchema>({
     operationName,
     retryPolicy = defaultRetryPoliy,
     getHashKey,
+    getAliasHashKey,
   }: SubscribeOptions = {}) => {
     const selections = new Set<Selection>();
     const context = createContext({
@@ -220,7 +225,9 @@ export const createResolvers = <TSchema extends BaseGeneratedSchema>({
       }
     });
 
-    const accessor = createSchemaAccessor<TSchema>(context);
+    const accessor = createSchemaAccessor<TSchema>(context, {
+      getAliasHashKey: getAliasHashKey ?? getAliasHashKeyResolvers,
+    });
 
     const resolve: ResolverParts<TSchema>['resolve'] = async () => {
       if (selections.size === 0) {

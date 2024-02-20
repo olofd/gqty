@@ -1,14 +1,18 @@
 import type { BaseGeneratedSchema, SchemaContext } from '../Client';
 import { GQtyError } from '../Error';
 import type { GeneratedSchemaObject } from '../Schema';
-import { Selection } from '../Selection';
+import { Selection, type GetAliasHashKey } from '../Selection';
 import { $meta } from './meta';
 import { createObjectAccessor } from './resolve';
 
 export { $meta } from './meta';
 
+export type SchemaAccessorOptions = {
+  getAliasHashKey?: GetAliasHashKey;
+};
 export function createSchemaAccessor<TSchema extends BaseGeneratedSchema>(
-  context: SchemaContext
+  context: SchemaContext,
+  { getAliasHashKey }: SchemaAccessorOptions = {}
 ): TSchema {
   const selectionCache = new Map<string, Selection>();
 
@@ -38,7 +42,10 @@ export function createSchemaAccessor<TSchema extends BaseGeneratedSchema>(
         // returns early and removes the possibility to make child selections.
         const selection =
           selectionCache.get(key) ??
-          Selection.createRoot(key, { aliasLength: context.aliasLength });
+          Selection.createRoot(key, {
+            aliasLength: context.aliasLength,
+            getAliasHashKey,
+          });
         selectionCache.set(key, selection);
 
         return createObjectAccessor({

@@ -21,6 +21,7 @@ import { createContext } from './context';
 import { createDebugger, type Debugger } from './debugger';
 import { createResolvers, type Resolvers } from './resolvers';
 import type { GetHashKey } from '../QueryBuilder';
+import type { GetAliasHashKey } from '../Selection';
 export { $meta } from '../Accessor';
 export { getFields, prepass, selectFields } from '../Helpers';
 export * as useMetaStateHack from '../Helpers/useMetaStateHack';
@@ -116,6 +117,7 @@ export type ClientOptions = {
   scalars: ScalarsEnumsHash;
   schema: Readonly<Schema>;
   getHashKey?: GetHashKey;
+  getAliasHashKey?: GetAliasHashKey;
 
   /**
    * Maximum accessor depth, prevents infinite recursions.
@@ -151,6 +153,7 @@ export const createClient = <
   // TODO: compat: remove in v4
   cache = new Cache(undefined, { normalization: true }),
   getHashKey,
+  getAliasHashKey,
   fetchOptions: {
     fetcher,
     cachePolicy: fetchPolicy = 'default',
@@ -204,6 +207,7 @@ export const createClient = <
     cache,
     debugger: debug,
     getHashKey,
+    getAliasHashKey,
     fetchOptions: {
       fetcher,
       cachePolicy: fetchPolicy,
@@ -215,7 +219,9 @@ export const createClient = <
     parentContext: clientContext,
   });
 
-  const accessor = createSchemaAccessor<TSchema>(clientContext);
+  const accessor = createSchemaAccessor<TSchema>(clientContext, {
+    getAliasHashKey,
+  });
 
   return {
     ...resolvers,
