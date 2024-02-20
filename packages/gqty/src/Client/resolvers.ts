@@ -1,4 +1,4 @@
-import type { GetHashKey } from 'gqty/QueryBuilder';
+import type { GetHashKey } from '../QueryBuilder';
 import { type BaseGeneratedSchema, type FetchOptions } from '.';
 import { createSchemaAccessor } from '../Accessor';
 import { type Cache } from '../Cache';

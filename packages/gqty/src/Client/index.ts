@@ -20,8 +20,7 @@ import { createLegacySubscriptionsClient } from './compat/subscriptionsClient';
 import { createContext } from './context';
 import { createDebugger, type Debugger } from './debugger';
 import { createResolvers, type Resolvers } from './resolvers';
-import type { GetHashKey } from 'gqty/QueryBuilder';
-
+import type { GetHashKey } from '../QueryBuilder';
 export { $meta } from '../Accessor';
 export { getFields, prepass, selectFields } from '../Helpers';
 export * as useMetaStateHack from '../Helpers/useMetaStateHack';
