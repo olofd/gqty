@@ -116,7 +116,7 @@ export type ClientOptions = {
   fetchOptions: FetchOptions;
   scalars: ScalarsEnumsHash;
   schema: Readonly<Schema>;
-  getHashKey: GetHashKey;
+  getHashKey?: GetHashKey;
 
   /**
    * Maximum accessor depth, prevents infinite recursions.
